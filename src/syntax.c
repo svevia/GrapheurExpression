@@ -1,7 +1,5 @@
 #include "syntax.h"
 
-
-
 node* createNode(typeJeton jet,node* nl,node* nr){
     node* newNode = (node*) malloc(sizeof(node));
     newNode->jeton=jet;
@@ -24,34 +22,42 @@ int tabSize(typeJeton tab[]){
 
 
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
-struct node* syntax(typeJeton tab[], int i) {
+struct node* syntax(typeJeton tab[], int* i) {
     int j;
-    struct node* tmp;
     struct node *newNode;
-    switch (tab[i].lexem) {
-        case FONCTION:
-            j=i;
-            //tmp = syntax(tab, i++);
-            printf("%u", tab[j].valeur.FUN);
-            return newNode = createNode(tab[j], syntax(tab, i++), NULL);
+    printf(" i = %d\n", *i);
+    printf("lexem %d\n", tab[*i].lexem);
+    switch (tab[*i].lexem) {
+            
+        case FONCTION:{
+            j = *i;
+            *i+=2;
+            printf(" fonction : %u\n", tab[j].valeur.FUN);
+            return createNode(tab[j], syntax(tab, i), NULL);
             break;
+        }
         case OPERATOR:
-            j = i;
+            j = *i;
+            *i++;
             //tmp stock le père
             //tmp = syntax(tab, i++);
             //struct node* newNode = createNode(tab[j], NULL, tmp);
-            printf("%u", tab[j].valeur.OPER);
-            return newNode = createNode(tab[j], syntax(tab, i++), syntax(tab, i+2));
+            printf("OPERATOR : %u\n", tab[j].valeur.OPER);
+            return createNode(tab[j], syntax(tab, j-1), syntax(tab, j+1));
             break;
+            
         case REEL:
+            j = *i;
+            *i++;
             //struct node* newNode = createNode(tab[i], NULL, NULL);
             //syntax(tab, i++);
-            j = i;
-            printf("%f", tab[j].valeur.VAL);
-            return newNode = createNode(tab[j],NULL, NULL);
+            printf("REEL : %lg\n", tab[j].valeur.VAL);
+            return createNode(tab[j],NULL, NULL);
             break;
+            
         case VARIABLE:
             //struct node* newNode = createNode(tab[i], NULL, NULL);
+            
         case FIN:
             return newNode;
             break;
@@ -125,7 +131,8 @@ int main(){
     x7->lexem = FIN;
     tab[6] = *x7;
     
-    syntax(tab, 0);
+    int i =0;
+    syntax(tab, &i);
     
     return 0;
 }
