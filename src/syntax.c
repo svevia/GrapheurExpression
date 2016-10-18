@@ -2,7 +2,7 @@
 
 
 
-node* createNode(typeJeton jet, struct node* nl, struct node* nr){
+node* createNode(typeJeton jet,node* nl,node* nr){
     node* newNode = (node*) malloc(sizeof(node));
     newNode->jeton=jet;
     newNode->left=nl;
@@ -73,6 +73,8 @@ int checkExpression(typeJeton tab[]){
                     return 203; //erreur fonction
                 }
                 break;
+            default:
+                break;
         }
     }
     if(nbrPar != 0){
@@ -80,3 +82,48 @@ int checkExpression(typeJeton tab[]){
     }
     return 200;
 }
+
+int main(){
+    int size = 8;
+    typeJeton tab[size];
+    typeJeton* x1 = (typeJeton*) malloc(sizeof(typeJeton));
+    x1->lexem = FONCTION;
+    x1->valeur.FUN = SIN;
+    tab[0] = *x1;
+    
+    typeJeton* x2 = (typeJeton*) malloc(sizeof(typeJeton));
+    x2->lexem = PAR_OPEN;
+    tab[1] = *x2;
+    
+    typeJeton* x3 = (typeJeton*) malloc(sizeof(typeJeton));
+    x3->lexem = REEL;
+    x3->valeur.VAL = 4.0;
+    tab[2] = *x3;
+    
+    typeJeton* x4 = (typeJeton*) malloc(sizeof(typeJeton));
+    x4->lexem = OPERATOR;
+    x4->valeur.OPER = PLUS;
+    tab[3] = *x4;
+    
+    typeJeton* x5 = (typeJeton*) malloc(sizeof(typeJeton));
+    x5->lexem = REEL;
+    x5->valeur.VAL = 3.0;
+    tab[4] = *x5;
+    
+    typeJeton* x6 = (typeJeton*) malloc(sizeof(typeJeton));
+    x6->lexem = PAR_CLOSE;
+    tab[5] = *x6;
+    
+    typeJeton* x7 = (typeJeton*) malloc(sizeof(typeJeton));
+    x7->lexem = FIN;
+    tab[6] = *x7;
+    
+    syntax(tab, 0);
+    
+    return 0;
+}
+
+
+
+
+
