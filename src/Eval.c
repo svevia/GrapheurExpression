@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "jeton.h"
+
 /* ------------ Prototype de la fonction ------------
 Nom de la fonction : Eval, contraction du mot Evaluateur qui correspond a notre partie du projet.
 Parametre d'entree : - x, la variable; de type flottant.
@@ -24,22 +28,62 @@ N.B : Cette fonction sera inseree dans une boucle et sera appelle ((plage de cal
 Ces deux donnees seront saisies par l'utilisateur.
 */
 
-float Eval (float x, noeud* arbre)
+float CalculRes (float x,node* arbre,float pas,short int bornePlus,short int borneMoins)
 {
-	switch(arbre->jeton.lexeme)
-	{
-		case OPE:
-			float y1 = arbre->fg; //recopie du prof | pourquoi y1 prend la valeur de fg ? => Mise en memoire du reel ?
-			float y2 = arbre->fd; //recopie du prof
-			break;
-			
-		case REEL:
-		
-			break;
-			
-		case X:
-			break;
-	}
-	
-	return resultat; //On retourne le resultat de l'operation
+    float y1,y2;
+    float resultat=0.0f;
+    if((arbre->left!=NULL)&&(arbre->right!=NULL)){
+        //while(){
+            switch(arbre->jeton.lexem)
+            {
+                case OPERATOR:
+                    y1 = arbre->left->jeton.valeur.VAL; //recopie du prof | pourquoi y1 prend la valeur de fg ? => Mise en memoire du reel ?
+                    y2 = arbre->right->jeton.valeur.VAL; //recopie du prof
+
+                    switch(arbre->jeton.lexem)
+                    {
+                        case PLUS:
+                            resultat=y1+y2;
+                        break;
+                        case MINUS:
+                            resultat=y1-y2;
+                        break;
+                        case MULTIPLICATION:
+                            resultat=y1*y2;
+                        break;
+                        case DIVISION:
+                            resultat=y1/y2;
+                        break;
+                    }
+                break;
+
+                case REEL:
+                    Eval(x,arbre->left);
+                break;
+
+                case VARIABLE:
+                    Eval(x,arbre->left);
+                break;
+
+                case FONCTION:
+                    switch(arbre->jeton.lexem)
+                    {
+                        case SIN:
+                            resultat=sin(resultat);
+                        break;
+                        case COS:
+                            resultat=cos(resultat);
+                        break;
+                    }
+                break;
+            }
+            Stockage(pas,borneMoins,bornePlus,resultat);
+            return resultat; //On retourne le resultat de l'operation
+        }
+    }
+}
+
+void Stockage (float pas,short int bornePlus,short int borneMoins){
+    short int taille = int(float((bornePlus-borneMoins))/pas);
+    point TableauPoints[taille];
 }

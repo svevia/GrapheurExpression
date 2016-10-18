@@ -14,10 +14,10 @@ union typeValeur{
 typedef struct{
     typeLexem lexem;
     union typeValeur valeur;
-    int priority;
 }typeJeton;
 
-typedef struct{
+
+typedef struct node{
     typeJeton jeton;
     struct node* left;
     struct node* right;
@@ -27,4 +27,3 @@ typedef struct{
     float x;
     float y;
 }point;
-
