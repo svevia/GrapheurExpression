@@ -14,6 +14,7 @@ union typeValeur{
 typedef struct{
     typeLexem lexem;
     union typeValeur valeur;
+    int priority;
 }typeJeton;
 
 
