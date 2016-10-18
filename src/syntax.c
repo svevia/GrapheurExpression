@@ -1,5 +1,7 @@
 #include "syntax.h"
 
+
+
 node* createNode(typeJeton jet, struct node* nl, struct node* nr){
     node* newNode = (node*) malloc(sizeof(node));
     newNode->jeton=jet;
@@ -8,6 +10,7 @@ node* createNode(typeJeton jet, struct node* nl, struct node* nr){
     
     return newNode;
 }
+
 
 
 int tabSize(typeJeton tab[]){
@@ -20,18 +23,38 @@ int tabSize(typeJeton tab[]){
 
 
 
-node* syntax(typeJeton tab[], int i) {
-    
+//Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
+struct node* syntax(typeJeton tab[], int i) {
+    int j;
+    struct node* tmp;
     switch (tab[i].lexem) {
+        case FONCTION:
+            j=i;
+            tmp = syntax(tab, i++);
+            node* newNode = createNode(tab[j], tmp, NULL);
+            break;
         case OPERATOR:
-            
+            j = i;
+            //tmp stock le père
+            tmp = syntax(tab, i++);
+            //struct node* newNode = createNode(tab[j], NULL, tmp);
+            break;
+        case REEL:
+            //struct node* newNode = createNode(tab[i], NULL, NULL);
+            syntax(tab, i++);
+            i++;
+            break;
+        case VARIABLE:
+            //struct node* newNode = createNode(tab[i], NULL, NULL);
+        case FIN:
+            break;
+        default:
             break;
 
     }
-
-
-    return createNode(tab[i], NULL, NULL);
+    return NULL;
 }
+    //return createNode(tab[i], NULL, NULL);
 
 int checkExpression(typeJeton tab[]){
     int nbrPar = 0;

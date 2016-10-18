@@ -1,6 +1,6 @@
-typedef enum{FONCTION, OPERATOR, VARIABLE, REEL, ERREUR, FIN, PAR_OPEN, PAR_CLOSE} typeLexem;
+typedef enum{FONCTION, OPERATOR, VARIABLE, REEL, ERREUR, FIN, PAR_OPEN, PAR_CLOSE} typeLexem; //Pour chaque nouvel élément ajouté, il faut modifier le fichier Eval.c
 typedef enum{PLUS='+', MINUS='-', MULTIPLICATION='*', DIVISION='/'} typeOperator;
-typedef enum{SIN, COS} typeFonction;
+typedef enum{SIN,COS} typeFonction;
 typedef enum{ERR1,ERR2} typeError;
 
 union typeValeur{
@@ -17,9 +17,14 @@ typedef struct{
     int priority;
 }typeJeton;
 
-
 typedef struct{
     typeJeton jeton;
     struct node* left;
     struct node* right;
 }node;
+
+typedef struct{
+    float x;
+    float y;
+}point;
+
