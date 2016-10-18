@@ -27,26 +27,33 @@ int tabSize(typeJeton tab[]){
 struct node* syntax(typeJeton tab[], int i) {
     int j;
     struct node* tmp;
+    struct node *newNode;
     switch (tab[i].lexem) {
         case FONCTION:
             j=i;
-            tmp = syntax(tab, i++);
-            node* newNode = createNode(tab[j], tmp, NULL);
+            //tmp = syntax(tab, i++);
+            printf("%u", tab[j].valeur.FUN);
+            return newNode = createNode(tab[j], syntax(tab, i++), NULL);
             break;
         case OPERATOR:
             j = i;
             //tmp stock le père
-            tmp = syntax(tab, i++);
+            //tmp = syntax(tab, i++);
             //struct node* newNode = createNode(tab[j], NULL, tmp);
+            printf("%u", tab[j].valeur.OPER);
+            return newNode = createNode(tab[j], syntax(tab, i++), syntax(tab, i+2));
             break;
         case REEL:
             //struct node* newNode = createNode(tab[i], NULL, NULL);
-            syntax(tab, i++);
-            i++;
+            //syntax(tab, i++);
+            j = i;
+            printf("%f", tab[j].valeur.VAL);
+            return newNode = createNode(tab[j],NULL, NULL);
             break;
         case VARIABLE:
             //struct node* newNode = createNode(tab[i], NULL, NULL);
         case FIN:
+            return newNode;
             break;
         default:
             break;
