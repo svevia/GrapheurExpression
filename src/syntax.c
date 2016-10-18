@@ -38,21 +38,21 @@ struct node* syntax(typeJeton tab[], int* i) {
         }
         case OPERATOR:
             j = *i;
-            *i++;
+            *i+=1;
             //tmp stock le père
             //tmp = syntax(tab, i++);
             //struct node* newNode = createNode(tab[j], NULL, tmp);
             printf("OPERATOR : %u\n", tab[j].valeur.OPER);
-            return createNode(tab[j], syntax(tab, j-1), syntax(tab, j+1));
+            return createNode(tab[j], syntax(tab, i--), syntax(tab, i));
             break;
             
         case REEL:
             j = *i;
-            *i++;
+            *i+=1;
             //struct node* newNode = createNode(tab[i], NULL, NULL);
             //syntax(tab, i++);
             printf("REEL : %lg\n", tab[j].valeur.VAL);
-            return createNode(tab[j],NULL, NULL);
+            return syntax(tab, i);
             break;
             
         case VARIABLE:
