@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "graph.h"
+#include <math.h>
 
 int bascule=0;
 int xMin=0;
@@ -22,10 +23,10 @@ struct point tab[] = {{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0
 void fillpointTab()
 {
 	point tmp = { 0.0, 0.0 };
-	for (int i=0; i<10; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
-		tmp.x = i+i;
-		tmp.y = i;
+		tmp.x = i;
+		tmp.y = sin((long double)i);
 		tab[i] = tmp;
 	}
 }
@@ -77,12 +78,11 @@ void drawCurve()
 	int tabLength = sizeof(tab)/sizeof(point);
 	point tmp1 = { 0.0, 0.0 };
 	point tmp2 = { 0.0, 0.0 };
-	convertTab();
 	for(int i=0; i<tabLength-1; ++i)
 	{
 		tmp1 = tab[i];
 		tmp2 = tab[i+1],
-		line(tmp1.x, tmp2.y, tmp1.x, tmp2.y);
+		line(tmp1.x, tmp1.y, tmp2.x, tmp2.y);
 	}
 }
 
@@ -122,7 +122,7 @@ void myDraw(void)
 * l'appel  InitGraph  en  tant  que fonctions  réagissantes  aux  évènements  de  "re-dessinage"  (pour  myDraw) 
 * et  aux  évènements  d'appui  sur  une  touche  du 
 * clavier (myKey).
-µ
+
 * @parma ac : nombre de parametres
 * @parma av : tableau contenant les parametres 
 *
@@ -133,7 +133,10 @@ int main(int ac,char *av[])
 	scanf("%d", &xMin);
 	printf("Entrez la borne minimale : ");
 	scanf("%d", &xMax);*/
+	xMin = -10;
+	xMax = 10;
 	fillpointTab();
+	convertTab();
 	InitGraph(ac,av,"Essai Glut",800,700,xMin,xMax,myDraw,myKey);
 	return 0;
 }
