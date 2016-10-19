@@ -21,12 +21,12 @@ struct point tab[] = {{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0
 //Testing method
 void fillpointTab()
 {
-	point* tmp;
+	point tmp = { 0.0, 0.0 };
 	for (int i=0; i<10; ++i)
 	{
-		tmp->x = i+i;
-		tmp->y = i;
-		tab[i] = *tmp;
+		tmp.x = i+i;
+		tmp.y = i;
+		tab[i] = tmp;
 	}
 }
 
@@ -43,14 +43,14 @@ float inter_ordonnee(float y, float y1, float y2){
 //Testing method
 void convertTab(){
 	int tabLength = sizeof(tab)/sizeof(point);
-	point* tmp;
-	point* res;
+	point tmp = { 0.0, 0.0 };
+	point res = { 0.0, 0.0 };
 	for(int i=0; i<tabLength; ++i)
 	{
-		tmp = &tab[i];
-		res->x = inter_abscisse(tmp->x,xMin,xMax);
-		res->y = inter_ordonnee(tmp->y,xMin,xMax);
-		tab[i] = *res;
+		tmp = tab[i];
+		res.x = inter_abscisse(tmp.x,xMin,xMax);
+		res.y = inter_ordonnee(tmp.y,xMin,xMax);
+		tab[i] = res;
 	}
 }
 
@@ -75,14 +75,14 @@ void myKey(int c)
 void drawCurve()
 {
 	int tabLength = sizeof(tab)/sizeof(point);
-	point* tmp1;
-	point* tmp2;
+	point tmp1 = { 0.0, 0.0 };
+	point tmp2 = { 0.0, 0.0 };
 	convertTab();
 	for(int i=0; i<tabLength-1; ++i)
 	{
-		tmp1 = &tab[i];
-		tmp2 = &tab[i+1],
-		line(tmp1->x, tmp2->y, tmp1->x, tmp2->y);
+		tmp1 = tab[i];
+		tmp2 = tab[i+1],
+		line(tmp1.x, tmp2.y, tmp1.x, tmp2.y);
 	}
 }
 
