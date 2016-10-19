@@ -7,6 +7,12 @@
 *.obj
 *.elf
 
+#Log files
+*.log
+
+#Solution files
+*.sdf
+
 # Linker output
 *.ilk
 *.map
