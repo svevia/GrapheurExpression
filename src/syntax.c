@@ -23,6 +23,26 @@ int tabSize(typeJeton tab[]){
 
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
 struct node* syntax(typeJeton tab[], int* i) {
+    /*node* arbre = NULL;
+    int end = 0;
+    int prio = 0;
+    while(end==0){
+        int i=0;
+        typeJeton* tmp = NULL;
+        while(tab[i].lexem!=FIN){
+            if((tmp==NULL)&&(tab[i].priority >= prio)){
+                tmp = &tab[i];
+            }
+            else if(tab[i].priority >= prio && tmp->priority < tab[i].priority){
+                tmp = &tab[i];
+            }
+            
+            }
+        
+        }*/
+
+
+    
     int j;
     struct node *newNode;
     printf(" i = %d\n", *i);
@@ -39,11 +59,12 @@ struct node* syntax(typeJeton tab[], int* i) {
         case OPERATOR:
             j = *i;
             *i+=1;
+            int k = *i-1;
             //tmp stock le père
             //tmp = syntax(tab, i++);
             //struct node* newNode = createNode(tab[j], NULL, tmp);
             printf("OPERATOR : %u\n", tab[j].valeur.OPER);
-            return createNode(tab[j], syntax(tab, i--), syntax(tab, i));
+            return createNode(tab[j], syntax(tab, &k), syntax(tab, i));
             break;
             
         case REEL:
@@ -95,6 +116,34 @@ int checkExpression(typeJeton tab[]){
     }
     return 200;
 }
+
+
+
+/*typeJeton* assignPriority(typeJeton tab[]){
+    int priority = 0;
+    for(int i =0; i < tabSize(tab);i++){
+        switch (tab[i].lexem) {
+            case PAR_OPEN:
+                priority+=10;
+                break;
+            case PAR_CLOSE:
+                priority-=10;
+                break;
+            case OPERATOR:
+                if (tab[i].valeur.OPER == MULTIPLICATION || tab[i].valeur.OPER == DIVISION) {
+                    tab[i].priority = priority+1;
+                }
+                tab[i].priority = priority;
+            case FONCTION:
+                tab[i].priority = priority+2;
+                break;
+            default:
+                break;
+        }
+    }
+    return sortTab(tab);
+}*/
+
 
 int main(){
     int size = 8;
