@@ -54,3 +54,4 @@ dkms.conf
 *.swp
 .~
 thumbs.db
+.DS_Store # This is for the mac tempory files
