@@ -22,28 +22,28 @@ int tabSize(typeJeton tab[]){
 
 
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
-struct node* syntax(typeJeton tab[], int* i) {
+struct node* syntax(typeJeton tab[], int* i, node* newNode) {
     int j;
-    struct node *newNode;
+    struct node *tmpNode;
     printf(" i = %d\n", *i);
     printf("lexem %d\n", tab[*i].lexem);
-    switch (tab[*i].lexem) {
-            
+    switch (tab[*i].lexem){
         case FONCTION:{
             j = *i;
             *i+=2;
             printf(" fonction : %u\n", tab[j].valeur.FUN);
-            return createNode(tab[j], syntax(tab, i), NULL);
+//            tmp = syntax(tab, i);
+//            newNode = createNode(tab[j], newNode, NULL);
+            //return createNode(tab[j], syntax(tab, i), NULL);
             break;
         }
         case OPERATOR:
             j = *i;
             *i+=1;
-            //tmp stock le père
-            //tmp = syntax(tab, i++);
-            //struct node* newNode = createNode(tab[j], NULL, tmp);
             printf("OPERATOR : %u\n", tab[j].valeur.OPER);
-            return createNode(tab[j], syntax(tab, i--), syntax(tab, i));
+            tmp = syntaxe(tab, i);
+            newNode = createNode(tab[j], newNode, tmp);
+//            return createNode(tab[j], syntax(tab, i--), syntax(tab, i));
             break;
             
         case REEL:
@@ -61,6 +61,13 @@ struct node* syntax(typeJeton tab[], int* i) {
         case FIN:
             return newNode;
             break;
+        case PAR_OPEN:
+            *i+=1;
+            return syntax(tab, i);
+            break;
+        case PAR_CLOSE:
+            *i+=1;
+            return syntax(tab, i);
         default:
             break;
 
@@ -131,6 +138,7 @@ int main(){
     x7->lexem = FIN;
     tab[6] = *x7;
     
+    checkExpression(tab);
     int i =0;
     syntax(tab, &i);
     
