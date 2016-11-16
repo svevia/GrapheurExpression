@@ -22,6 +22,7 @@ typedef struct node{
     typeJeton jeton;
     struct node* left;
     struct node* right;
+	int pos;
 }node;
 
 typedef struct{

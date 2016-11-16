@@ -5,10 +5,23 @@ node* createNode(typeJeton jet,node* nl,node* nr){
     newNode->jeton=jet;
     newNode->left=nl;
     newNode->right=nr;
-    
+	switch (jet.lexem) {
+		case OPERATOR:
+			printf("Operateur : %c ----- prio : %i\n", jet.valeur.OPER,jet.priority);
+			break;
+		case FONCTION:
+			printf("Fonction : %i ----- prio : %i\n", jet.valeur.FUN, jet.priority);
+			break;
+		case REEL:
+			printf("Reel : %f\n", jet.valeur.VAL);
+			break;
+		case VARIABLE:
+			printf("variable\n");
+			break;
+	}
+
     return newNode;
 }
-
 
 
 int tabSize(typeJeton tab[]){
@@ -19,88 +32,75 @@ int tabSize(typeJeton tab[]){
     return i;
 }
 
+//cree et place un node en fonction de sa position dans le tableau initial
+int placerNode(typeJeton tab[],node* arbre, int pos) {
+	if (arbre == NULL) {
+		arbre = createNode(tab[pos],NULL,NULL);
+		return 0;
+	}
+	else {
+		int finit = 0;
+		node* tmp = arbre;
+		while (finit != 1) {
+			if (pos < tmp->pos) {
+				if (tmp->left != NULL) {
+					tmp = tmp->left; // on décale le noeud actuel sur la gauche
+				}
+				else {
+					tmp->left = createNode(tab[pos], NULL, NULL);
+					return 0;
+				}
+			}
+
+			else if (pos > tmp->pos) {
+				if (tmp->right != NULL) {
+					tmp = tmp->right; // on décale le noeud actuel sur la gauche
+				}
+				else {
+					tmp->right = createNode(tab[pos], NULL, NULL);
+					return 0;
+				}
+			}
+		}
+	}
+	return 1;
+}
+
 
 
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
-struct node* syntax(typeJeton tab[], int* i) {
-    node * tmp;
-    node* newNode;
-    /*node* arbre = NULL;
-    int end = 0;
-    int prio = 0;
-    while(end==0){
-        int i=0;
-        typeJeton* tmp = NULL;
-        while(tab[i].lexem!=FIN){
-            if((tmp==NULL)&&(tab[i].priority >= prio)){
-                tmp = &tab[i];
-            }
-            else if(tab[i].priority >= prio && tmp->priority < tab[i].priority){
-                tmp = &tab[i];
-            }
-            
-            }
-        
-        }*/
+struct node* syntax(typeJeton tab[]) {
+	int posPrioMini = 0;
+	node* arbre = NULL;
+	int changement = 1;
+	while (changement != 0) {//premiere phase : positionnement des operteurs et fonction --on regarde les priorités pour placer les node
+		changement = 0;
+		posPrioMini = 0;
+		for (int i = 0; i < tabSize(tab); i++) {
+			if (tab[i].lexem == OPERATOR || tab[i].lexem == FONCTION) {
+				if (tab[posPrioMini].priority == -1 && tab[i].priority > 0) {
+					posPrioMini = i;
+					changement++;
+				}
+				else if (tab[i].priority <= tab[posPrioMini].priority && tab[i].priority != -1) {
+					posPrioMini = i;
+					changement++;
+				}
+			}
+		}
+		if (changement != 0) {
+			placerNode(tab, arbre, posPrioMini);
+			tab[posPrioMini].priority = -1;//on retire cette priorité des prochains calculs
+		}
+	};
 
-    int j;
-    //struct node *tmpNode;
-    printf(" i = %d\n", *i);
-    printf("lexem %d\n", tab[*i].lexem);
-    switch (tab[*i].lexem){
-        case FONCTION:{
-            j = *i;
-            *i+=2;
-            printf(" fonction : %u\n", tab[j].valeur.FUN);
-//            tmp = syntax(tab, i);
-//            newNode = createNode(tab[j], newNode, NULL);
-            //return createNode(tab[j], syntax(tab, i), NULL);
-            break;
-        }
-        case OPERATOR:
-            j = *i;
-            *i+=1;
-            //int k = *i-1;
-            //tmp stock le père
-            //tmp = syntax(tab, i++);
-            //struct node* newNode = createNode(tab[j], NULL, tmp);
-            printf("OPERATOR : %u\n", tab[j].valeur.OPER);
-            //return createNode(tab[j], syntax(tab, &k), syntax(tab, i));
-            printf("OPERATOR : %u\n", tab[j].valeur.OPER);
-            tmp = syntax(tab, i);
-            newNode = createNode(tab[j], newNode, tmp);
-//            return createNode(tab[j], syntax(tab, i--), syntax(tab, i));
-            break;
-            
-        case REEL:
-            j = *i;
-            *i+=1;
-            //struct node* newNode = createNode(tab[i], NULL, NULL);
-            //syntax(tab, i++);
-            printf("REEL : %lg\n", tab[j].valeur.VAL);
-            return syntax(tab, i);
-            break;
-            
-        case VARIABLE:
-            //struct node* newNode = createNode(tab[i], NULL, NULL);
-            
-        case FIN:
-            //return newNode;
-            break;
-        case PAR_OPEN:
-            *i+=1;
-            return syntax(tab, i);
-            break;
-        case PAR_CLOSE:
-            *i+=1;
-            return syntax(tab, i);
-        default:
-            break;
-
-    }
-    return NULL;
+	for (int i = 0; i < tabSize(tab); i++) {//seconde phase : on place les reel et les variables en fonction de leur postion
+		if (tab[i].lexem == VARIABLE || tab[i].lexem == REEL) {
+			placerNode(tab, arbre, i);
+		}
+	}
+	return arbre;
 }
-    //return createNode(tab[i], NULL, NULL);
 
 int checkExpression(typeJeton tab[]){
     int nbrPar = 0;
@@ -143,13 +143,18 @@ typeJeton* assignPriority(typeJeton tab[]){
                 break;
             case OPERATOR:
                 if (tab[i].valeur.OPER == MULTIPLICATION || tab[i].valeur.OPER == DIVISION) {
-                    tab[i].priority = priority+1;
+                    tab[i].priority = priority + 3;
+					break;
                 }
-                tab[i].priority = priority;
+				else {
+					tab[i].priority = priority + 2;
+					break;
+				}
             case FONCTION:
-                tab[i].priority = priority+2;
+                tab[i].priority = priority + 5;
                 break;
             default:
+				tab[i].priority = -1;
                 break;
         }
     }
@@ -157,8 +162,7 @@ typeJeton* assignPriority(typeJeton tab[]){
 }
 
 int main(){
-    int size = 8;
-    typeJeton tab[size];
+    typeJeton tab[20];
     typeJeton* x1 = (typeJeton*) malloc(sizeof(typeJeton));
     x1->lexem = FONCTION;
     x1->valeur.FUN = SIN;
@@ -170,31 +174,42 @@ int main(){
     
     typeJeton* x3 = (typeJeton*) malloc(sizeof(typeJeton));
     x3->lexem = REEL;
-    x3->valeur.VAL = 4.0;
+    x3->valeur.VAL = (float)4.0;
     tab[2] = *x3;
     
     typeJeton* x4 = (typeJeton*) malloc(sizeof(typeJeton));
     x4->lexem = OPERATOR;
-    x4->valeur.OPER = PLUS;
+    x4->valeur.OPER = MULTIPLICATION;
     tab[3] = *x4;
     
     typeJeton* x5 = (typeJeton*) malloc(sizeof(typeJeton));
     x5->lexem = REEL;
-    x5->valeur.VAL = 3.0;
+    x5->valeur.VAL = (float)3.0;
     tab[4] = *x5;
+
+	typeJeton* x6 = (typeJeton*)malloc(sizeof(typeJeton));
+	x6->lexem = OPERATOR;
+	x6->valeur.OPER = PLUS;
+	tab[5] = *x6;
+
+	typeJeton* x7 = (typeJeton*)malloc(sizeof(typeJeton));
+	x7->lexem = REEL;
+	x7->valeur.VAL = (float)2.0;
+	tab[6] = *x7;
     
-    typeJeton* x6 = (typeJeton*) malloc(sizeof(typeJeton));
-    x6->lexem = PAR_CLOSE;
-    tab[5] = *x6;
+    typeJeton* x8 = (typeJeton*) malloc(sizeof(typeJeton));
+    x8->lexem = PAR_CLOSE;
+    tab[7] = *x8;
     
-    typeJeton* x7 = (typeJeton*) malloc(sizeof(typeJeton));
-    x7->lexem = FIN;
-    tab[6] = *x7;
+    typeJeton* x9 = (typeJeton*) malloc(sizeof(typeJeton));
+    x9->lexem = FIN;
+    tab[8] = *x9;
     
     checkExpression(tab);
-    int i =0;
-    syntax(tab, &i);
+	assignPriority(tab);
+    syntax(tab);
     
+	getchar();
     return 0;
 }
 
