@@ -55,3 +55,10 @@ dkms.conf
 .~
 thumbs.db
 .DS_Store # This is for the mac tempory files
+
+#visual studio
+*.db
+*.filters
+*.vcxproj
+*.sln
+.vs/
