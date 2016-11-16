@@ -34,46 +34,118 @@ int tabSize(typeJeton tab[]){
 
 //cree et place un node en fonction de sa position dans le tableau initial
 int placerNode(typeJeton tab[],node* arbre, int pos) {
-	if (arbre == NULL) {
+	if (arbre == NULL) {// si l'arbre est nul, on place le node en tant que racine
 		arbre = createNode(tab[pos],NULL,NULL);
 		return 0;
 	}
 	else {
-		int finit = 0;
-		node* tmp = arbre;
-		while (finit != 1) {
+		node* tmp = arbre;// noeud actuel de lecture
+		while (1) {// la fonction sera quitté à la creation d'un node
 			if (pos < tmp->pos) {
 				if (tmp->left != NULL) {
-					tmp = tmp->left; // on décale le noeud actuel sur la gauche
+					tmp = tmp->left; // on décale le noeud actuel sur la gauche et on poursuit la lecture de l'arbre
 				}
 				else {
-					tmp->left = createNode(tab[pos], NULL, NULL);
-					return 0;
+					tmp->left = createNode(tab[pos], NULL, NULL);//position trouvée : on crée le node
+					return 1;
 				}
 			}
 
 			else if (pos > tmp->pos) {
 				if (tmp->right != NULL) {
-					tmp = tmp->right; // on décale le noeud actuel sur la gauche
+					tmp = tmp->right; // on décale le noeud actuel sur la droite et on poursuit la lecture de l'arbre
 				}
 				else {
-					tmp->right = createNode(tab[pos], NULL, NULL);
-					return 0;
+					tmp->right = createNode(tab[pos], NULL, NULL);//position trouvée : on crée le node
+					return 1;
 				}
 			}
 		}
 	}
-	return 1;
+	return 0;
+}
+
+int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'expression en entrée
+	int nbrPar = 0;
+	int i;
+
+	// verifie que le nombre de parenthèse est cohérent
+	for (i = 0; i<tabSize(tab); i++) {
+		switch (tab[i].lexem) {
+		case PAR_OPEN:
+			nbrPar++;
+			break;
+
+		case PAR_CLOSE:
+			nbrPar--;
+			break;
+		case FONCTION:
+			if (tab[i + 1].lexem != PAR_OPEN) {
+				return 203; //erreur fonction
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+
+	if (nbrPar != 0) {
+		return 202; //erreur parenthésage
+	}
+	return 200;
 }
 
 
 
+typeJeton* assignPriority(typeJeton tab[]) {// assigne les priorité aux operateurs et fonctions
+
+											/**
+											Paretnhèse ouvrante : ajoute 10 à toutes les priorité à l'intèreieur de la parenthèse
+											fonction : priorité = 5
+											Addition/ Soustration : priorité = 2
+											Multiplication/division : priorité = 3
+											**/
+
+	int priority = 0;
+	for (int i = 0; i < tabSize(tab); i++) {
+		switch (tab[i].lexem) {
+		case PAR_OPEN:
+			priority += 10;
+			break;
+		case PAR_CLOSE:
+			priority -= 10;
+			break;
+		case OPERATOR:
+			if (tab[i].valeur.OPER == MULTIPLICATION || tab[i].valeur.OPER == DIVISION) {
+				tab[i].priority = priority + 3;
+				break;
+			}
+			else {
+				tab[i].priority = priority + 2;
+				break;
+			}
+		case FONCTION:
+			tab[i].priority = priority + 5;
+			break;
+		default:
+			tab[i].priority = -1;
+			break;
+		}
+	}
+	return tab;
+}
+
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
-struct node* syntax(typeJeton tab[]) {
+node* syntax(typeJeton tab[]) {
+	checkExpression(tab);//verifie que l'expression est correct
+	assignPriority(tab);//assigne les priorité
 	int posPrioMini = 0;
 	node* arbre = NULL;
 	int changement = 1;
-	while (changement != 0) {//premiere phase : positionnement des operteurs et fonction --on regarde les priorités pour placer les node
+	//premiere phase : positionnement des operteurs et fonction --on regarde les priorités pour placer les node
+	//En cas d'egalite de priorite, on prend la derniere occurence
+	while (changement != 0) {
 		changement = 0;
 		posPrioMini = 0;
 		for (int i = 0; i < tabSize(tab); i++) {
@@ -102,64 +174,7 @@ struct node* syntax(typeJeton tab[]) {
 	return arbre;
 }
 
-int checkExpression(typeJeton tab[]){
-    int nbrPar = 0;
-    int i;
-    for(i = 0; i<tabSize(tab);i++){
-        switch (tab[i].lexem) {
-            case PAR_OPEN:
-                nbrPar++;
-                break;
-                
-            case PAR_CLOSE:
-                nbrPar--;
-                break;
-            case FONCTION:
-                if(tab[i+1].lexem != PAR_OPEN){
-                    return 203; //erreur fonction
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    if(nbrPar != 0){
-        return 202; //erreur parenthésage
-    }
-    return 200;
-}
 
-
-
-typeJeton* assignPriority(typeJeton tab[]){
-    int priority = 0;
-    for(int i =0; i < tabSize(tab);i++){
-        switch (tab[i].lexem) {
-            case PAR_OPEN:
-                priority+=10;
-                break;
-            case PAR_CLOSE:
-                priority-=10;
-                break;
-            case OPERATOR:
-                if (tab[i].valeur.OPER == MULTIPLICATION || tab[i].valeur.OPER == DIVISION) {
-                    tab[i].priority = priority + 3;
-					break;
-                }
-				else {
-					tab[i].priority = priority + 2;
-					break;
-				}
-            case FONCTION:
-                tab[i].priority = priority + 5;
-                break;
-            default:
-				tab[i].priority = -1;
-                break;
-        }
-    }
-    return tab;
-}
 
 int main(){
     typeJeton tab[20];
@@ -205,12 +220,10 @@ int main(){
     x9->lexem = FIN;
     tab[8] = *x9;
     
-    checkExpression(tab);
-	assignPriority(tab);
     syntax(tab);
     
 	getchar();
-    return 0;
+    return 200;
 }
 
 
