@@ -81,7 +81,7 @@ int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'express
 			break;
 		case FONCTION:
 			if (tab[i + 1].lexem != PAR_OPEN) {
-				return 203; //erreur fonction
+				exit(203); //erreur fonction
 			}
 			break;
 		default:
@@ -91,7 +91,7 @@ int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'express
 
 
 	if (nbrPar != 0) {
-		return 202; //erreur parenthésage
+		exit(202); //erreur parenthésage
 	}
 	return 200;
 }
@@ -100,12 +100,12 @@ int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'express
 
 typeJeton* assignPriority(typeJeton tab[]) {// assigne les priorité aux operateurs et fonctions
 
-											/**
-											Paretnhèse ouvrante : ajoute 10 à toutes les priorité à l'intèreieur de la parenthèse
-											fonction : priorité = 5
-											Addition/ Soustration : priorité = 2
-											Multiplication/division : priorité = 3
-											**/
+	/**
+	Paretnhèse ouvrante : ajoute 10 à toutes les priorité à l'intèreieur de la parenthèse
+	fonction : priorité = 5
+	Addition/ Soustration : priorité = 2
+	Multiplication/division : priorité = 3
+	**/
 
 	int priority = 0;
 	for (int i = 0; i < tabSize(tab); i++) {
