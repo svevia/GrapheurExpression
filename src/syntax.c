@@ -24,6 +24,29 @@ node* createNode(typeJeton jet,node* nl,node* nr){
 }
 
 
+void printtreenode(node* root)
+{
+	if (root == NULL) {
+		return;
+	}
+	printtreenode(root->left);
+	switch (root->jeton.lexem) {
+	case OPERATOR:
+		printf("Operateur : %c\n", root->jeton.valeur.OPER);
+		break;
+	case FONCTION:
+		printf("Fonction : %i\n", root->jeton.valeur.FUN);
+		break;
+	case REEL:
+		printf("Reel : %f\n", root->jeton.valeur.VAL);
+		break;
+	case VARIABLE:
+		printf("variable\n");
+		break;
+	}
+	printtreenode(root->right);
+}
+
 int tabSize(typeJeton tab[]){
     int i = 0;
     while(tab[i].lexem != FIN){
@@ -33,15 +56,15 @@ int tabSize(typeJeton tab[]){
 }
 
 //cree et place un node en fonction de sa position dans le tableau initial
-int placerNode(typeJeton tab[],node* arbre, int pos) {
-	if (arbre == NULL) {// si l'arbre est nul, on place le node en tant que racine
-		arbre = createNode(tab[pos],NULL,NULL);
+int placerNode(typeJeton tab[],node** arbre, int pos) {
+	if (*arbre == NULL) {// si l'arbre est nul, on place le node en tant que racine
+		*arbre = createNode(tab[pos],NULL,NULL);
 		return 0;
 	}
 	else {
-		node* tmp = arbre;// noeud actuel de lecture
+		node* tmp = *arbre;// noeud actuel de lecture
 		while (1) {// la fonction sera quitté à la creation d'un node
-			if (pos < tmp->pos) {
+			if (pos < tmp->pos || tmp->jeton.lexem ==  FONCTION) {
 				if (tmp->left != NULL) {
 					tmp = tmp->left; // on décale le noeud actuel sur la gauche et on poursuit la lecture de l'arbre
 				}
@@ -161,14 +184,14 @@ node* syntax(typeJeton tab[]) {
 			}
 		}
 		if (changement != 0) {
-			placerNode(tab, arbre, posPrioMini);
+			placerNode(tab, &arbre, posPrioMini);
 			tab[posPrioMini].priority = -1;//on retire cette priorité des prochains calculs
 		}
 	};
 
 	for (int i = 0; i < tabSize(tab); i++) {//seconde phase : on place les reel et les variables en fonction de leur postion
 		if (tab[i].lexem == VARIABLE || tab[i].lexem == REEL) {
-			placerNode(tab, arbre, i);
+			placerNode(tab, &arbre, i);
 		}
 	}
 	return arbre;
@@ -220,8 +243,8 @@ int main(){
     x9->lexem = FIN;
     tab[8] = *x9;
     
-    syntax(tab);
-    
+    node* arbre = syntax(tab);
+	printtreenode(arbre);
 	getchar();
     return 200;
 }
