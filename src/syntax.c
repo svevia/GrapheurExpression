@@ -1,10 +1,11 @@
 #include "syntax.h"
 
-node* createNode(typeJeton jet,node* nl,node* nr){
+node* createNode(typeJeton jet,node* nl,node* nr,int pos){
     node* newNode = (node*) malloc(sizeof(node));
     newNode->jeton=jet;
     newNode->left=nl;
     newNode->right=nr;
+	newNode->pos = pos;
 	switch (jet.lexem) {
 		case OPERATOR:
 			printf("Operateur : %c ----- prio : %i\n", jet.valeur.OPER,jet.priority);
@@ -27,9 +28,10 @@ node* createNode(typeJeton jet,node* nl,node* nr){
 void printtreenode(node* root)
 {
 	if (root == NULL) {
+		printf("\n");
 		return;
 	}
-	printtreenode(root->left);
+
 	switch (root->jeton.lexem) {
 	case OPERATOR:
 		printf("Operateur : %c\n", root->jeton.valeur.OPER);
@@ -45,6 +47,9 @@ void printtreenode(node* root)
 		break;
 	}
 	printtreenode(root->right);
+	printtreenode(root->left);
+
+
 }
 
 int tabSize(typeJeton tab[]){
@@ -58,29 +63,31 @@ int tabSize(typeJeton tab[]){
 //cree et place un node en fonction de sa position dans le tableau initial
 int placerNode(typeJeton tab[],node** arbre, int pos) {
 	if (*arbre == NULL) {// si l'arbre est nul, on place le node en tant que racine
-		*arbre = createNode(tab[pos],NULL,NULL);
+		*arbre = createNode(tab[pos],NULL,NULL,pos);
 		return 0;
 	}
 	else {
 		node* tmp = *arbre;// noeud actuel de lecture
 		while (1) {// la fonction sera quitté à la creation d'un node
-			if (pos < tmp->pos || tmp->jeton.lexem ==  FONCTION) {
-				if (tmp->left != NULL) {
-					tmp = tmp->left; // on décale le noeud actuel sur la gauche et on poursuit la lecture de l'arbre
+			if (tmp->jeton.lexem != VARIABLE || tmp->jeton.lexem != REEL) {
+				if (pos < tmp->pos || tmp->jeton.lexem == FONCTION) {
+					if (tmp->left != NULL) {
+						tmp = tmp->left; // on décale le noeud actuel sur la gauche et on poursuit la lecture de l'arbre
+					}
+					else {
+						tmp->left = createNode(tab[pos], NULL, NULL,pos);//position trouvée : on crée le node
+						return 1;
+					}
 				}
-				else {
-					tmp->left = createNode(tab[pos], NULL, NULL);//position trouvée : on crée le node
-					return 1;
-				}
-			}
 
-			else if (pos > tmp->pos) {
-				if (tmp->right != NULL) {
-					tmp = tmp->right; // on décale le noeud actuel sur la droite et on poursuit la lecture de l'arbre
-				}
-				else {
-					tmp->right = createNode(tab[pos], NULL, NULL);//position trouvée : on crée le node
-					return 1;
+				else if (pos > tmp->pos) {
+					if (tmp->right != NULL) {
+						tmp = tmp->right; // on décale le noeud actuel sur la droite et on poursuit la lecture de l'arbre
+					}
+					else {
+						tmp->right = createNode(tab[pos], NULL, NULL,pos);//position trouvée : on crée le node
+						return 1;
+					}
 				}
 			}
 		}
