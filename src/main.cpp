@@ -2,18 +2,24 @@
 * Includes
 *
 **************************/
+extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+}
 #include <ctype.h>
 #ifndef JETON_H_INCLUDED
 #define JETON_H_INCLUDED
+extern "C" {
 #include "jeton.h"
+}
 #endif
+extern "C" {
 #include "lex.h"
 #include "syntax.h"
 #include "Eval.h"
+}
 #include "Drawing.h"
 
 /**
@@ -46,7 +52,7 @@ int main(int ac, char *av[])
 
 	// Scan fonction
 	printf("Saisissez une fonction :\n");        //Demande de saisie d'une fonction
-	gets(fonction);							//Sauvegarde de la fonction saisie dans le tableau de caractere fonction
+	scanf("%s",fonction);							//Sauvegarde de la fonction saisie dans le tableau de caractere fonction
 	
 	// Scan bornes
 	while (!scanOK)
@@ -69,7 +75,7 @@ int main(int ac, char *av[])
 	calculerPas(xMin, xMax, yMin, yMax);
 
 	// Analyse lexicale
-	analyseLex(fonction,resLex);
+	 analyseLex(fonction,resLex);
 
 	// Analyse syntaxique
 	resSyntax = syntax(resLex);
