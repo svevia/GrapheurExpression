@@ -1,12 +1,13 @@
 #include "Eval.h"
 
+	
 /* ------------ Prototype de la fonction ------------
 Nom de la fonction : CalculRes, contraction des mots Calcul et Resultat qui correspondent à l'objectif de cette fonction.
 Parametre d'entree : - xParam, qui correspond au x de f(x); de type flottant.
-					 - arbre, l'arbre binaire; de type node*.
+					 - racine, l'racine binaire; de type node*.
 Parametre de sortie : - y, le resultat de l'operation; de type flottant.
 Objectif de cette fonction : Retourner un resultat pour un operateur, une variable et un reel (possiblement nul) donne.
-Pour cela, nous devons recuperer l'operateur, la variable et le reel dans l'arbre binaire -passe en parametre-.
+Pour cela, nous devons recuperer l'operateur, la variable et le reel dans l'racine binaire -passe en parametre-.
 
 
 Algorithme de la fonction :
@@ -25,61 +26,62 @@ N.B : Cette fonction sera inseree dans une boucle et sera appelle ((plage de cal
 Ces deux donnees seront saisies par l'utilisateur.
 */
 
-float CalculRes(float xParam,node* arbre)
+float CalculRes(float xParam,node* racine)
 {
     float y1,y2;
-    float resultat=0.0f;
-            switch(arbre->jeton.lexem)
+    double resultat=0.0f;
+            switch(racine->jeton.lexem)
             {
                 case OPERATOR:
                 //Tester si les deux fils du noeud opérateur sont des REELS
-                    if(arbre->left->jeton.lexem==OPERATOR){
-                        CalculRes(xParam,arbre->left);
+                /*    if(racine->left->jeton.lexem==OPERATOR)
+					{
+                        CalculRes(xParam,racine->left);
                     }
-
-                    y1 = arbre->left->jeton.valeur.VAL; //Mise en memoire du reel
-                    y2 = arbre->right->jeton.valeur.VAL;
-                    printf("y1 :%f --- y2:%f \n",y1,y2);
-                    switch(arbre->jeton.valeur.OPER)
+				*/
+                    y1 = racine->left->jeton.valeur.VAL; //Mise en memoire du reel
+                    y2 = racine->right->jeton.valeur.VAL;
+                    printf("y1 :%f --- y2:%f \n",y1,y2); //affichage pour verification
+                    switch(racine->jeton.valeur.OPER)
                     {
                         case PLUS:
-                            resultat=y1+y2;
+                            //addition des deux reels
+							resultat = CalculRes(xParam,racine->left) + CalculRes(xParam,racine->right);
                         break;
                         case MINUS:
-                            resultat=y1-y2;
+                            //soustraction des deux reels
+							resultat = CalculRes(xParam,racine->left) - CalculRes(xParam,racine->right);
                         break;
                         case MULTIPLICATION:
-                            resultat=y1*y2;
+                            //multiplication des deux reels
+							resultat = CalculRes(xParam,racine->left) * CalculRes(xParam,racine->right);
                         break;
                         case DIVISION:
-                            resultat=y1/y2;
+
+							resultat = CalculRes(xParam,racine->left) / CalculRes(xParam,racine->right);
                         break;
                     }
                 break;
 
                 case REEL:
-                    CalculRes(xParam,arbre->left);
+					resultat = racine->jeton.valeur.VAL;
                 break;
 
                 case VARIABLE:
-					y2 = xParam;//donner a y2 la valeur de xParam
+					resultat = xParam;//donne a y2 la valeur de xParam
                 break;
 
                 case FONCTION:
-                    switch(arbre->jeton.lexem)
+                    switch(racine->jeton.lexem)
                     {
                         case SIN:
-                            resultat=(float)sin(arbre->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
+                            resultat=(float)sin(racine->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
 							//Le casting en float est obligatoire pour eviter la generation de warning, en effet le sin renvoie un double et non un float.
 						break;
                         case COS:
-                            resultat=(float)cos(arbre->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
+                            resultat=(float)cos(racine->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
 							//Le casting en float est obligatoire pour eviter la generation de warning, en effet le cos renvoie un double et non un float.
                         break;
-
-						/*case TAN: // A ajouter dans l'enum typeFonction
-							resultat=tan(arbre->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
-						break;*/
                     }
                 break;
             }
@@ -91,7 +93,7 @@ Nom de la fonction : Stockage, puisque cette fonction permet de stocker le resul
 Parametre d'entree : - pas, le pas choisis par l'utilisateur; de type flottant.
 					 - borneMoins, la borne inferieur d'affichage de la fonction; de type short int.
 					 - bornePlus, la borne superieure d'affichage de la fonction; de type short int.
-					 - arbre, l'arbre binaire; de type node*.
+					 - racine, l'racine binaire; de type node*.
 Parametre de sortie : - Mettre en place un type erreur ? Sinon c'est une procedure.
 Objectif de cette fonction : .
 Cette fonction a pour objectif de mettre en mémoire le resultat retourne par la fonction CalculRes.
@@ -104,27 +106,17 @@ Debut
 Fin
 */
 
-float Stockage (float pas,short int borneMoins,short int bornePlus, node* arbre){
-	int taille = 1;
-	taille = (int) ((float)((bornePlus-borneMoins)/pas));
+float Stockage (float pas,short int borneMoins,short int bornePlus, node* racine){
+	int taille = (int) ((float)((bornePlus-borneMoins)/pas));
     short int i;
 
-    point TableauPoints[10]; // A modifier, lorsque je met taille => erreur.
+    point TableauPoints[100]; // A modifier, lorsque je met taille => erreur.
 
     for(i=0;i<=taille;i++){
         TableauPoints[i].x=(float)(borneMoins+(i*pas));
-        TableauPoints[i].y=CalculRes(TableauPoints[i].x,arbre);
+        TableauPoints[i].y=CalculRes(TableauPoints[i].x,racine);
         printf("y: %f  \n",TableauPoints[i].y);
         printf("x: %f  \n",TableauPoints[i].x);
     }
     return TableauPoints[0].y; //pour les tests uniquement
-}
-
-//mis en dur juste pour le test (sinon c'est dans syntax.c)
-node* createNode(typeJeton jet, struct node* nl, struct node* nr){
-    node* newNode = (node*) malloc(sizeof(node));
-    newNode->jeton=jet;
-    newNode->left=nl;
-    newNode->right=nr;
-    return newNode;
 }
