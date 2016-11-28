@@ -147,6 +147,7 @@ typeJeton* assignPriority(typeJeton tab[]) {// assigne les priorité aux operate
 			priority -= 10;
 			break;
 		case OPERATOR:
+			printf("op");
 			if (tab[i].valeur.OPER == MULTIPLICATION || tab[i].valeur.OPER == DIVISION) {
 				tab[i].priority = priority + 3;
 				break;
@@ -179,6 +180,7 @@ node* syntax(typeJeton tab[]) {
 	while (changement != 0) {
 		changement = 0;
 		posPrioMini = 0;
+		i = 0;
 		for (i; i < tabSize(tab); i++) {
 			if (tab[i].lexem == OPERATOR || tab[i].lexem == FONCTION) {
 				if (tab[posPrioMini].priority == -1 && tab[i].priority > 0) {

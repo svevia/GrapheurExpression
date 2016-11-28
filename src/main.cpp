@@ -34,7 +34,7 @@ extern "C" {
 * @parma av : tableau contenant les paramètres
 *
 */
-int main(int ac, char *av[])
+int main(int argc, char *argv[])
 {
 	// Variables
 	bool scanOK = false;
@@ -52,7 +52,9 @@ int main(int ac, char *av[])
 	// Scan fonction
 	printf("Saisissez une fonction :\n");        //Demande de saisie d'une fonction
 	scanf_s("%s", fonction, 200);					//Sauvegarde de la fonction saisie dans le tableau de caractere fonction
-
+	fflush(stdin);
+	printf("\n", fonction);
+	fflush(stdout);
 
 	// Scan bornes
 	while (!scanOK)
@@ -86,7 +88,10 @@ int main(int ac, char *av[])
 
 	// Dessin
 	convertTab();
-	InitGraph(ac, av, "Grapheur", 800, 700, myDraw, myKey);
+	char *myargv[1];
+	int myargc = 1;
+	myargv[0] = strdup("Graph");
+	InitGraph(myargc, myargv, "Grapheur", 800, 700, myDraw, myKey);
 	return 0;
 }
 

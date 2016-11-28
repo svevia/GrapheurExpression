@@ -42,7 +42,7 @@ float CalculRes(float xParam,node* racine)
 				*/
                     y1 = racine->left->jeton.valeur.VAL; //Mise en memoire du reel
                     y2 = racine->right->jeton.valeur.VAL;
-                    printf("y1 :%f --- y2:%f \n",y1,y2); //affichage pour verification
+                    //printf("y1 :%f --- y2:%f \n",y1,y2); //affichage pour verification
                     switch(racine->jeton.valeur.OPER)
                     {
                         case PLUS:
@@ -76,11 +76,11 @@ float CalculRes(float xParam,node* racine)
                     switch(racine->jeton.lexem)
                     {
                         case SIN:
-                            resultat=(float)sin(racine->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
+                            resultat=(float)sin(CalculRes(xParam,racine->left)); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
 							//Le casting en float est obligatoire pour eviter la generation de warning, en effet le sin renvoie un double et non un float.
 						break;
                         case COS:
-                            resultat=(float)cos(racine->left->jeton.valeur.VAL); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
+                            resultat=(float)cos(CalculRes(xParam, racine->left)); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
 							//Le casting en float est obligatoire pour eviter la generation de warning, en effet le cos renvoie un double et non un float.
                         break;
                     }
