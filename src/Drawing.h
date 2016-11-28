@@ -11,7 +11,7 @@
 
 void setBornes(int xMin, int xMax, int yMin, int yMax);
 
-void setTab(point* res);
+void setTab(point* res, int t);
 
 float inter_abscisse(float x, float x1, float x2);
 

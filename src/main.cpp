@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 	typeJeton* resLex = (typeJeton*)malloc(sizeof(typeJeton)*100) ;
 	node* resSyntax;
 	point* tab;
+	int taille = 0;
 	//Bornes xMin et xMax définies par l'utilisateur (par défaut à -10 et 10)
 	int xMin = -10;
 	int xMax = 10;
@@ -57,20 +58,28 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 
 	// Scan bornes
+	scanOK = false;
 	while (!scanOK)
 	{
+		printf("Entrez la borne minimale pour X : ");
 		scanOK = scanBornes(&xMin);
 	}
+	scanOK = false;
 	while (!scanOK)
 	{
+		printf("Entrez la borne maximale pour X : ");
 		scanOK = scanBornes(&xMax);
 	}
+	scanOK = false;
 	while (!scanOK)
 	{
+		printf("Entrez la borne minimale pour Y : ");
 		scanOK = scanBornes(&yMin);
 	}
+	scanOK = false;
 	while (!scanOK)
 	{
+		printf("Entrez la borne maximale pour Y : ");
 		scanOK = scanBornes(&yMax);
 	}
 	setBornes(xMin, xMax, yMin, yMax);
@@ -83,8 +92,9 @@ int main(int argc, char *argv[])
 	resSyntax = syntax(resLex);
 
 	// Evaluation
+	taille = getTaille(0.05, xMin, xMax);
 	tab = stockage(0.05,xMin,xMax,resSyntax);
-	setTab(tab);
+	setTab(tab, taille);
 
 	// Dessin
 	convertTab();

@@ -73,7 +73,7 @@ float CalculRes(float xParam,node* racine)
                 break;
 
                 case FONCTION:
-                    switch(racine->jeton.lexem)
+                    switch(racine->jeton.valeur.FUN)
                     {
                         case SIN:
                             resultat=(float)sin(CalculRes(xParam,racine->left)); //en effet le fils droit est a NULL, seul le fils gauche a une valeur
@@ -107,8 +107,13 @@ Debut
 Fin
 */
 
+int getTaille(float pas, int borneMoins, int bornePlus)
+{
+	return (int)((float)((bornePlus - borneMoins) / pas));
+}
+
 point* stockage (float pas,int borneMoins,int bornePlus, node* racine){
-	int taille = (int) ((float)((bornePlus-borneMoins)/pas));
+	int taille = getTaille(pas, borneMoins, bornePlus);
     short int i;
 
     point* TableauPoints = (point*) malloc(sizeof(point)*taille);
@@ -116,8 +121,8 @@ point* stockage (float pas,int borneMoins,int bornePlus, node* racine){
     for(i=0;i<=taille;i++){
         TableauPoints[i].x=(float)(borneMoins+(i*pas));
         TableauPoints[i].y=CalculRes(TableauPoints[i].x,racine);
-        printf("y: %f  \n",TableauPoints[i].y);
-        printf("x: %f  \n",TableauPoints[i].x);
+        //printf("y: %f  \n",TableauPoints[i].y);
+        //printf("x: %f  \n",TableauPoints[i].x);
     }
     return TableauPoints;
 }

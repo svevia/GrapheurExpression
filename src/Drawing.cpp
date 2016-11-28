@@ -4,6 +4,7 @@ int bascule = 0;
 
 //tableau de points
 point* tab;
+int taille;
 
 //Le pas doit nous permettre de calculer et d'afficher le bon nombre de graduations sur l'axe des abscisses
 double pasCalculeX = 0.1;
@@ -23,8 +24,9 @@ void setBornes(int xMin, int xMax, int yMin, int yMax)
 	yMaxG = yMax;
 }
 
-void setTab(point* res)
+void setTab(point* res, int t)
 {
+	taille = t;
 	tab = res;
 }
 
@@ -40,10 +42,9 @@ float inter_ordonnee(float y, float y1, float y2){
 
 //permet de convertir le tableau de points créé par fillPointTab() en tableau de points situés dans le bon intervalle défini par xMin et xMax
 void convertTab(){
-	int tabLength = sizeof(tab) / sizeof(point);
 	point tmp = { 0.0, 0.0 };
 	point res = { 0.0, 0.0 };
-	for (int i = 0; i<tabLength; ++i)
+	for (int i = 0; i<taille; ++i)
 	{
 		tmp = tab[i];
 		res.x = inter_abscisse(tmp.x, xMinG, xMaxG);
@@ -57,11 +58,10 @@ void drawCurve()
 {
 	int val1 = 0;
 	int val2 = 0;
-	int tabLength = sizeof(tab) / sizeof(point);
 	point tmp1 = { 0.0, 0.0 };
 	point tmp2 = { 0.0, 0.0 };
 	setcolor(0.7F,0.8F,1.0F);
-	for (int i = 0; i<tabLength - 1; ++i)
+	for (int i = 0; i<taille - 1; ++i)
 	{
 		val1 = i;
 		val2 = i + 1;
