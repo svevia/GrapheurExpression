@@ -2,12 +2,11 @@
 * Includes
 *
 **************************/
-extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
 #include <math.h>
-}
 #include <ctype.h>
 #ifndef JETON_H_INCLUDED
 #define JETON_H_INCLUDED
@@ -39,7 +38,7 @@ int main(int ac, char *av[])
 {
 	// Variables
 	bool scanOK = false;
-	char* fonction = "";
+	char fonction[100];
 	typeJeton* resLex = (typeJeton*)malloc(sizeof(typeJeton)*100) ;
 	node* resSyntax;
 	point* tab;
@@ -52,8 +51,9 @@ int main(int ac, char *av[])
 
 	// Scan fonction
 	printf("Saisissez une fonction :\n");        //Demande de saisie d'une fonction
-	scanf("%s",fonction);							//Sauvegarde de la fonction saisie dans le tableau de caractere fonction
-	
+	scanf_s("%s", fonction, 200);					//Sauvegarde de la fonction saisie dans le tableau de caractere fonction
+
+
 	// Scan bornes
 	while (!scanOK)
 	{
