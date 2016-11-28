@@ -136,9 +136,9 @@ typeJeton* assignPriority(typeJeton tab[]) {// assigne les priorité aux operate
 	Addition/ Soustration : priorité = 2
 	Multiplication/division : priorité = 3
 	**/
-
+	int i = 0;
 	int priority = 0;
-	for (int i = 0; i < tabSize(tab); i++) {
+	for (i; i < tabSize(tab); i++) {
 		switch (tab[i].lexem) {
 		case PAR_OPEN:
 			priority += 10;
@@ -168,17 +168,18 @@ typeJeton* assignPriority(typeJeton tab[]) {// assigne les priorité aux operate
 
 //Vérifie les valeurs du tableau jetons et crée l'arbre en cosnséquence
 node* syntax(typeJeton tab[]) {
-	checkExpression(tab);//verifie que l'expression est correct
-	assignPriority(tab);//assigne les priorité
 	int posPrioMini = 0;
 	node* arbre = NULL;
 	int changement = 1;
+	int i = 0;
+	checkExpression(tab);//verifie que l'expression est correct
+	assignPriority(tab);//assigne les priorité
 	//premiere phase : positionnement des operteurs et fonction --on regarde les priorités pour placer les node
 	//En cas d'egalite de priorite, on prend la derniere occurence
 	while (changement != 0) {
 		changement = 0;
 		posPrioMini = 0;
-		for (int i = 0; i < tabSize(tab); i++) {
+		for (i; i < tabSize(tab); i++) {
 			if (tab[i].lexem == OPERATOR || tab[i].lexem == FONCTION) {
 				if (tab[posPrioMini].priority == -1 && tab[i].priority > 0) {
 					posPrioMini = i;
@@ -195,8 +196,8 @@ node* syntax(typeJeton tab[]) {
 			tab[posPrioMini].priority = -1;//on retire cette priorité des prochains calculs
 		}
 	};
-
-	for (int i = 0; i < tabSize(tab); i++) {//seconde phase : on place les reel et les variables en fonction de leur postion
+	i = 0;
+	for (i; i < tabSize(tab); i++) {//seconde phase : on place les reel et les variables en fonction de leur postion
 		if (tab[i].lexem == VARIABLE || tab[i].lexem == REEL) {
 			placerNode(tab, &arbre, i);
 		}
@@ -206,7 +207,7 @@ node* syntax(typeJeton tab[]) {
 
 
 
-int main(){
+/*int main(){
     typeJeton tab[20];
     typeJeton* x1 = (typeJeton*) malloc(sizeof(typeJeton));
     x1->lexem = FONCTION;
@@ -254,7 +255,7 @@ int main(){
 	printtreenode(arbre);
 	getchar();
     return 200;
-}
+}*/
 
 
 

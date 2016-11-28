@@ -1,4 +1,5 @@
 #define MAX 100
+#define MAXINPUT 100
 
 typedef enum{
     FONCTION=10,
@@ -9,7 +10,7 @@ typedef enum{
     FIN,
     PAR_OPEN,
     PAR_CLOSE,
-    INDEFINI}typeLexem;
+	INDEFINI}typeLexem;
 
 typedef enum{
     PLUS=30,
@@ -43,6 +44,7 @@ union typeValeur{
     typeLexem INDEFINI;
     typeLexem VARIABLE;
 };
+
 typedef struct{
     typeLexem lexem;
     union typeValeur valeur;

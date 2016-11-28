@@ -26,6 +26,7 @@ N.B : Cette fonction sera inseree dans une boucle et sera appelle ((plage de cal
 Ces deux donnees seront saisies par l'utilisateur.
 */
 
+
 float CalculRes(float xParam,node* racine)
 {
     float y1,y2;
@@ -106,11 +107,11 @@ Debut
 Fin
 */
 
-float Stockage (float pas,short int borneMoins,short int bornePlus, node* racine){
+point* stockage (float pas,int borneMoins,int bornePlus, node* racine){
 	int taille = (int) ((float)((bornePlus-borneMoins)/pas));
     short int i;
 
-    point TableauPoints[100]; // A modifier, lorsque je met taille => erreur.
+    point* TableauPoints = (point*) malloc(sizeof(point)*taille);
 
     for(i=0;i<=taille;i++){
         TableauPoints[i].x=(float)(borneMoins+(i*pas));
@@ -118,5 +119,5 @@ float Stockage (float pas,short int borneMoins,short int bornePlus, node* racine
         printf("y: %f  \n",TableauPoints[i].y);
         printf("x: %f  \n",TableauPoints[i].x);
     }
-    return TableauPoints[0].y; //pour les tests uniquement
+    return TableauPoints;
 }
