@@ -6,6 +6,6 @@
 #include "jeton.h"
 #endif
 
-int getTaille(float pas, int borneMoins, int bornePlus);
-point* stockage (float pas,int borneMoins,int bornePlus, node* racine);
+short int getTaille(float pas,short int borneMoins, short int bornePlus);
+point* stockage (float pas,short int borneMoins,short int bornePlus, node* racine);
 float CalculRes(float xParam,node* racine);
