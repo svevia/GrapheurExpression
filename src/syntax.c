@@ -111,7 +111,8 @@ int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'express
 			break;
 		case FONCTION:
 			if (tab[i + 1].lexem != PAR_OPEN) {
-				exit(203); //erreur fonction
+				error(203); //erreur fonction
+				return 203;
 			}
 			break;
 		default:
@@ -121,7 +122,7 @@ int checkExpression(typeJeton tab[]) {// verifie des incohérence dans l'express
 
 
 	if (nbrPar != 0) {
-		exit(202); //erreur parenthésage
+		error(202); //erreur parenthésage
 	}
 	return 200;
 }
